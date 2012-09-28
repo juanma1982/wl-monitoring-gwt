@@ -1,0 +1,96 @@
+<project name="WebLogicConsole" basedir="." default="default">
+
+	<target name="default" depends="buildwar">
+	</target>
+	
+	<property name="src.dir" value="src" />
+	<property name="build.classes.dir" value="build/classes" />
+	<property name="build.dir" value="war" />
+	<property name="gwt.path" value="C:/pmp/eclipse-jee-indigo-win32/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.3.0.r37v201106211634/gwt-2.3.0" />
+
+	<property name="commons.src.dir" value="${common.shared.project.dir}/src" />
+	<property name="commons.build.dir" value="${common.shared.project.dir}/build" />
+
+
+	<path id="compile.classpath">
+		<fileset dir="${build.dir}/WEB-INF/lib">
+			<include name="**/*.jar" />
+			<include name="**/*.xml" />
+		</fileset>
+	</path>
+
+	<path id="weblogin.path" path="${src.dir}">
+		<fileset dir="${build.dir}/WEB-INF/lib">
+			<include name="**/*.jar" />
+			<include name="**/*.xml" />
+		</fileset>		
+	</path>
+
+	<path id="gwt.project.class.path">
+		<fileset dir="${gwt.path}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="weblogicStat.path">
+	    <pathelement location="war/WEB-INF/classes"/>
+	    <pathelement location="${gwt.path}/gwt-user.jar"/>
+		<fileset dir="src/wlstatistics" includes="**/*.xml"/>
+	    <fileset dir="${gwt.path}" includes="gwt-dev*.jar"/>
+	    <!-- Add any additional non-server libs (such as JUnit) -->
+	    <fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
+	  </path>
+	
+	<target name="clean">
+		<delete dir="${commons.build.dir}" />
+		<delete dir="${commons.src.dir}" />
+		<delete dir="${build.classes.dir}" />
+
+	</target>
+
+	
+	<target name="compile.weblogin">
+			<mkdir dir="${build.classes.dir}" />
+			<javac srcdir="${src.dir}" destdir="${build.classes.dir}" >
+			<classpath>
+				<path refid="compile.classpath" />
+			</classpath>
+			</javac>
+		</target>
+	
+	<target name="build.jar.weblogin" depends="compile.weblogin">
+			<jar destfile="${build.dir}/WEB-INF/lib/wlstatistics.jar" basedir="${build.classes.dir}">
+				<fileset dir="${src.dir}">
+					<include name="**/*.xml" />
+				</fileset>
+			</jar>
+	</target>
+	
+	<target name="gwtc" depends="build.jar.weblogin" description="GWT compile to JavaScript">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<pathelement location="src"/>
+				<pathelement location="src/wlstatistics/WebLogicConsole.gwt.xml"/>
+				<path refid="weblogicStat.path" />
+			</classpath>			
+			<jvmarg value="-Xmx256M" />		
+			<arg value="wlstatistics.WebLogicConsole" />
+		</java>
+	</target>
+
+	<target name="buildwar" depends="gwtc">
+		<war basedir="war" destfile="MBeanWebMonitor.war" webxml="war/WEB-INF/web.xml">
+				<exclude name="WEB-INF/**" />
+				<webinf dir="war/WEB-INF/">
+					<include name="**/*.jar" />
+				</webinf>
+		</war>
+	</target>
+
+	<target name="deploy">
+		<copy file="MBeanWebMonitor.war" todir="." />
+	</target>
+
+</project>
+
+	
