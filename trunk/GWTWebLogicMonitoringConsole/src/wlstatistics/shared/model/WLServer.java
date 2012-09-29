@@ -18,6 +18,7 @@
 package wlstatistics.shared.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class WLServer implements Serializable{
 	/**
@@ -30,6 +31,20 @@ public class WLServer implements Serializable{
 	private String version;
 	private String serverStatus;
 	private String connectionStatus;
+	private String health;
+	private ArrayList<WLDatasource> datasources;
+	private static String RUNNING = "RUNNING";
+	
+	public WLServer(){
+		name ="";
+		host ="";
+		port="";
+		version="";
+		serverStatus="";
+		connectionStatus="";
+		health="";
+		datasources= new ArrayList<WLDatasource>();
+	}
 	
 	public String getVersion() {
 		return version;
@@ -69,9 +84,27 @@ public class WLServer implements Serializable{
 	}
 	
 	public boolean isRunning(){
-		if (serverStatus.contains("RUNNING"))
+		if (serverStatus.contains(RUNNING))
 			return true;
 		else
 			return false;
 	}
+	public String getHealth() {
+		return health;
+	}
+	public void setHealth(String health) {
+		this.health = health;
+	}
+	
+	public void addDatasource (WLDatasource datasource){
+		datasources.add(datasource);
+	}
+	public ArrayList<WLDatasource> getDatasources() {
+		return datasources;
+	}
+	public void setDatasources(ArrayList<WLDatasource> datasources) {
+		this.datasources = datasources;
+	}
+
+	
 }

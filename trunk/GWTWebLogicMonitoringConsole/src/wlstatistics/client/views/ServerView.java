@@ -35,6 +35,8 @@ public class ServerView extends Portlet {
 	private IButton selectorJmsButton;
 	private Label serverName ;
 	private IButton topologiaButton;
+	private IButton listaTopologiaButton;	
+
 	public ServerView() {
 		
 		super();
@@ -89,6 +91,12 @@ public class ServerView extends Portlet {
 		absolutePanel.addChild(topologiaButton);
 		topologiaButton.moveTo(125, 139);
 		topologiaButton.setSize("100px", "35px");
+		
+		listaTopologiaButton = new IButton("Lista Topolog\u00EDa");
+		absolutePanel.addChild(listaTopologiaButton);
+		listaTopologiaButton.moveTo(238, 139);
+		listaTopologiaButton.setSize("100px", "35px");
+		
 		SetConnectionStatusRed();
 		SetServerStatusRed();
 		this.setCanDragResize(true);  
@@ -124,6 +132,14 @@ public class ServerView extends Portlet {
 	
 	public IButton getTopologiaButton() {
 		return topologiaButton;
+	}
+	
+	public IButton getListaTopologiaButton() {
+		return listaTopologiaButton;
+	}
+
+	public void setListaTopologiaButton(IButton listaTopologiaButton) {
+		this.listaTopologiaButton = listaTopologiaButton;
 	}
 	
 	public void setServerName(String name){
