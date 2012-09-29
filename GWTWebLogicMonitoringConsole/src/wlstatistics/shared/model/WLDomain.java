@@ -26,12 +26,14 @@ public class WLDomain implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private String name;
+	private String adminServerName;
 	private String adminHost;
 	private String adminPort;
 	private String user;
 	private String password;
 	private String adminServerStatus;
 	private String adminConnectionStatus;
+	private String adminHealth;
 	private ArrayList<String> jmsDestinationSelected = new ArrayList<String>();
 	private ArrayList<WLServer> managedServers = new ArrayList<WLServer>();
 	
@@ -105,6 +107,19 @@ public class WLDomain implements Serializable{
 	}
 	public ArrayList<WLServer> getManagedServers() {
 		return this.managedServers;
+	}
+	public void setAdminHealth(String health) {
+		adminHealth = health;
+	}
+	
+	public String getAdminHealth() {
+		return adminHealth;
+	}
+	public String getAdminServerName() {
+		return adminServerName;
+	}
+	public void setAdminServerName(String adminServerName) {
+		this.adminServerName = adminServerName;
 	}
 	
 }

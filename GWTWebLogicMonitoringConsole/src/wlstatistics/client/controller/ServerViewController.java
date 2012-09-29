@@ -25,6 +25,7 @@ import wlstatistics.client.WeblogicMonitorServiceAsync;
 import wlstatistics.client.views.ServerDestinationView;
 import wlstatistics.client.views.ServerView;
 import wlstatistics.client.views.StatisticsView;
+import wlstatistics.client.views.TopologyListView;
 import wlstatistics.client.views.TopologyView;
 import wlstatistics.shared.model.WLDomain;
 
@@ -64,6 +65,13 @@ public class ServerViewController {
 			}
 
 		});
+		view.getListaTopologiaButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				popUpListaTopologia();
+			}
+
+		});
+		
 	}
 	
 	public void popUpTopologia() {
@@ -79,6 +87,23 @@ public class ServerViewController {
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("Érror al obtener topología");
+				
+			}
+		});
+	}
+	
+	public void popUpListaTopologia() {
+		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<WLDomain>() {
+			
+			@Override
+			public void onSuccess(WLDomain result) {
+				TopologyListView viewList = new TopologyListView();				
+				TopologyListViewController topologyListController = new TopologyListViewController(viewList,controlledDomain, result);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Érror al obtener listado de topología");
 				
 			}
 		});

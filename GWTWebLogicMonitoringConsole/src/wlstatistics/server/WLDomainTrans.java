@@ -30,9 +30,11 @@ public class WLDomainTrans {
 		WLDomain wLDomain = new WLDomain();
 		try {
 			wLDomain.setName(domain.getName());
+			wLDomain.setAdminServerName(domain.getAdminServerName());
 			wLDomain.setAdminHost(domain.getAdminServer().getListenAddress());
 			wLDomain.setAdminPort(domain.getAdminServer().getListenPort().toString());
-			wLDomain.setAdminServerStatus(domain.getAdminServer().getHealthState().toString());
+			wLDomain.setAdminHealth(WLServerTransfor.getStringHealth(domain.getAdminServer().getHealthState()));
+			wLDomain.setAdminServerStatus(domain.getAdminServer().getState());
 			for(IServer server: domain.getManagedServers()){
 				wLDomain.addManagedServers(WLServerTransfor.transform(server));				
 			}

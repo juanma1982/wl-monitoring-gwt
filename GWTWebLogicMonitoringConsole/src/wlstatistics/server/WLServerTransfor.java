@@ -17,19 +17,56 @@
  */
 package wlstatistics.server;
 
+import mBeanControl.exceptions.ObjectNotFoundException;
+import mBeanControl.interfaces.IJDBCRuntime;
 import mBeanControl.interfaces.IServer;
+import weblogic.health.HealthState;
 import wlstatistics.shared.model.WLServer;
 
 public class WLServerTransfor {
 
 	public static WLServer transform(IServer server) {
-		WLServer wLServer =  new WLServer();
-		wLServer.setName(server.getName());
-		wLServer.setHost(server.getListenAddress());
-		wLServer.setPort(server.getListenPort().toString());
-		wLServer.setVersion(server.getWeblogicVersion());
-		wLServer.setServerStatus(server.getState());
+		WLServer wLServer = new WLServer();
+		try {
+			wLServer.setName(server.getName());
+			wLServer.setHost(server.getListenAddress());
+			wLServer.setPort(server.getListenPort().toString());
+			wLServer.setVersion(server.getWeblogicVersion());
+			wLServer.setServerStatus(server.getState());
+			wLServer.setHealth(getStringHealth(server.getHealthState()));
+			if (server.getIJDBCRuntimeService() != null)
+				for (IJDBCRuntime datasource : server.getIJDBCRuntimeService()
+						.getIJDBCRuntimes()) {
+					wLServer.addDatasource(WLDatasourceTransf
+							.transform(datasource));
+				}
+		} catch (ObjectNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return wLServer;
+	}
+
+	public static String getStringHealth(HealthState state) {
+		String health = "";
+		switch (state.getState()) {
+		case HealthState.HEALTH_OK:
+			health = "OK";
+			break;
+		case HealthState.HEALTH_FAILED:
+			health = "FAILED";
+			break;
+		case HealthState.HEALTH_CRITICAL:
+			health = "CRITICAL";
+			break;
+		case HealthState.HEALTH_OVERLOADED:
+			health = "OVERLOADED";
+			break;
+		case HealthState.HEALTH_WARN:
+			health = "WARNING";
+			break;
+		}
+		return health;
 	}
 
 }
