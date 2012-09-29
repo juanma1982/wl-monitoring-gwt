@@ -37,6 +37,8 @@ public interface IDomain {
 	
 	public String getName() throws ObjectNotFoundException;
 	
+	public String getAdminServerName() throws ObjectNotFoundException;
+	
 	public ArrayList<IServer> getIServers() throws ObjectNotFoundException;
 	
 	public IServer getIServer(String name) throws ObjectNotFoundException;

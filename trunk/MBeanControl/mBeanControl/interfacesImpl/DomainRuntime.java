@@ -17,6 +17,7 @@
  */
 package mBeanControl.interfacesImpl;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
@@ -33,9 +34,9 @@ import mBeanControl.interfaces.IServer;
 public class DomainRuntime implements IDomain  {
 	private  MBeanServerConnection connection;
 	private  final ObjectName domainRuntimeMBean;
-	private ArrayList<ServerRuntime> serverRuntimes;
+	private HashMap<String,ServerRuntime> serverRuntimes;
 	private IServer adminServer;
-	private ArrayList<IServer> managedServers;
+	private HashMap<String,IServer> managedServers;
 		
 	
 	/**
@@ -47,6 +48,9 @@ public class DomainRuntime implements IDomain  {
 	public DomainRuntime(MBeanServerConnection connection,ObjectName domainRuntimeMBean){
 		this.connection = connection;
 		this.domainRuntimeMBean = domainRuntimeMBean;
+		this.managedServers = new HashMap<String,IServer>();
+		this.serverRuntimes = new HashMap<String,ServerRuntime>();
+		
 	}
 	
 
@@ -56,9 +60,26 @@ public class DomainRuntime implements IDomain  {
 	 * @return The name of the server
 	 * @throws ObjectNotFoundException 
 	 */
-	public String getName() throws ObjectNotFoundException {
+	public String getAdminServerName() throws ObjectNotFoundException {
 		try {
 			return (String) connection.getAttribute(domainRuntimeMBean, "ServerName");
+		} catch (Exception e) {
+			throw new ObjectNotFoundException(e);
+		} 
+	}
+	
+	/**
+	 * This method query for the attribute "Name" of the domainRuntimeMBean
+	 * 
+	 * @return The name of the server
+	 * @throws ObjectNotFoundException 
+	 */
+	public String getName() throws ObjectNotFoundException {
+		try {
+			
+			ObjectName domainMBean = (ObjectName) connection.getAttribute(domainRuntimeMBean, "DomainConfiguration");
+			return (String) connection.getAttribute(domainMBean, "Name");
+			//return (String) connection.getAttribute(domainRuntimeMBean, "Name");
 		} catch (Exception e) {
 			throw new ObjectNotFoundException(e);
 		} 
@@ -72,9 +93,11 @@ public class DomainRuntime implements IDomain  {
 	 */
 	public ArrayList<IServer> getIServers() throws ObjectNotFoundException {
 		
-		ArrayList<IServer> iServers =  new ArrayList<IServer>();
-		iServers.addAll(getServers());
-		
+		ArrayList<IServer> iServers =  new ArrayList<IServer>();		
+		for(String key: getServers().keySet()){
+			IServer server = this.serverRuntimes.get(key);
+			iServers.add(server);			
+		}
 		return iServers;
 	}
 
@@ -89,12 +112,13 @@ public class DomainRuntime implements IDomain  {
 	 */
 	public IServer getIServer(String name) throws ObjectNotFoundException {
 		
-		for(ServerRuntime server : getServers()){
+		for(String key: getServers().keySet()){
+			IServer server = this.serverRuntimes.get(key);
 			if(server.getName().equals(name)){
 				return server;
 			}
 		}
-	
+		
 		return null;
 	}
 	
@@ -104,47 +128,45 @@ public class DomainRuntime implements IDomain  {
 		"ServerRuntimes");
 	}
 	
-	private ArrayList<ServerRuntime> getServers() throws ObjectNotFoundException{
-		if(serverRuntimes == null){
-			serverRuntimes = new ArrayList<ServerRuntime>();
-			
+	private HashMap<String,ServerRuntime> getServers() throws ObjectNotFoundException{
+		//if(serverRuntimes == null){
 			try {
 				for(ObjectName o :getServerRuntimes()){
 					ServerRuntime serverRuntime = new ServerRuntime(connection, o);
-					serverRuntimes.add(serverRuntime);
+					serverRuntimes.put(serverRuntime.getName(),serverRuntime);
 				}
 			} catch (Exception e) {
 				throw new ObjectNotFoundException(e);
 			}
-		}
+		//}
 		return serverRuntimes;
 	}
 
 
 	public IServer getAdminServer() throws ObjectNotFoundException {
 		if(this.adminServer == null){
-			for(IServer server : getServers()){
+			for(String key: getServers().keySet()){
+				IServer server = this.serverRuntimes.get(key);
 				if(server.isAdminServer()){
 					this.adminServer = server;
 					return server;
 				}
 			}
 		}
-		
 		return this.adminServer;
 	}
 
 
-	public ArrayList<IServer> getManagedServers() throws ObjectNotFoundException {
-		if(this.managedServers == null ){
-			this.managedServers = new ArrayList<IServer>();
-			for(IServer server: getServers()){
-				if(!server.isAdminServer()){
-					this.managedServers.add(server);
-				}
+	public ArrayList<IServer> getManagedServers() throws ObjectNotFoundException {		
+		ArrayList<IServer> result = new ArrayList<IServer>();
+		for(String key: getServers().keySet()){
+			IServer server = this.serverRuntimes.get(key);
+			if(!server.isAdminServer()){
+				this.managedServers.put(key,server);
+				result.add(server);
 			}
 		}
 		
-		return this.managedServers;
+		return result;
 	}
 }

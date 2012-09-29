@@ -38,6 +38,8 @@ public interface IServer {
 	
 	public IJVMRuntime getIJVMRuntime();
 	
+	public IJDBCRuntimeService getIJDBCRuntimeService();
+	
 	public IThreads getIThreads();
 	
 	public IJMSServer getIJMServer(String name);

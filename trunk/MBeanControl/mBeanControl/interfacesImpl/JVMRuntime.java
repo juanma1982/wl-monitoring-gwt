@@ -37,7 +37,7 @@ public class JVMRuntime implements IJVMRuntime{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new Long(0);
 	}
 	
 }
