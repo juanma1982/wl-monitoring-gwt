@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
+import mBeanControl.interfaces.IJDBCRuntime;
+import mBeanControl.interfaces.IJDBCRuntimeService;
 import mBeanControl.interfaces.IJMSServer;
 import mBeanControl.interfaces.IJVMRuntime;
 import mBeanControl.interfaces.ISAF;
@@ -66,6 +68,7 @@ public class ServerRuntime implements IServer {
 			status = (String) connection.getAttribute(serverRuntime, "State");
 
 		} catch (Exception e) {
+			status = "DOWN";
 			e.printStackTrace();
 		}
 		return status;
@@ -197,6 +200,7 @@ public class ServerRuntime implements IServer {
 		try {
 			health = (HealthState) connection.getAttribute(serverRuntime, "HealthState");
 		} catch (Exception e) {
+			health=new HealthState(3);
 			e.printStackTrace();
 		}
 
@@ -211,6 +215,21 @@ public class ServerRuntime implements IServer {
 			SAFRuntime sAF = new SAFRuntime(
 					connection, sAFRuntime);
 			return sAF;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override
+	public IJDBCRuntimeService getIJDBCRuntimeService() {
+		try {
+			ObjectName jdbcRuntime = (ObjectName) connection.getAttribute(
+					serverRuntime, "JDBCServiceRuntime");
+			JDBCRuntimeService jdbcRuntimeWL = new JDBCRuntimeService(
+					connection, jdbcRuntime);
+			return jdbcRuntimeWL;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
