@@ -35,7 +35,7 @@ public class TestQueue {
 		String username = "weblogic";
 		String password = "weblogic";
 		
-		IDomain dr = ConnectionFactory.Connect(hostname, portString, username, password);
+		IDomain dr = ConnectionFactory.Connect(hostname, portString, username, password,0);
 		
 		IServer server;
 		try {
