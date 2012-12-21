@@ -16,6 +16,9 @@
  * the License.
  */
 package mBeanControl.interfaces;
+
+import weblogic.health.HealthState;
+
 /**
  * Threads Interface
  * AccessPoint: {@link IServer}
@@ -28,4 +31,13 @@ public interface IThreads {
 	public Integer getPendingUserRequestCount();
 	
 	public Integer getExecuteThreadIdleCount();
+	
+	public HealthState getState();
+	
+	public Integer getHoggingThreadCount();
+	
+	public Integer getExecuteThreadTotalCount();
+	
+	public Double getThroughput();
+	
 }
