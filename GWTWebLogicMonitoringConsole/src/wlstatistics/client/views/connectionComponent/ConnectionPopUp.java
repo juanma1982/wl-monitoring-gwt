@@ -18,17 +18,21 @@
 package wlstatistics.client.views.connectionComponent;
 
 import wlstatistics.client.WeblogicMonitorService.UtilGWT;
+import wlstatistics.client.resources.ResourcesManager;
 
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.smartgwt.client.widgets.Window;
 
 public class ConnectionPopUp extends Window {
+	private static final String fourHoundreds = "400px";
+	private static final String threeHoundredsFifty = "350px";
+	
 	private ConnectionScreen component = new ConnectionScreen(UtilGWT.getInstance());
 	public ConnectionPopUp(){				
 		this.addItem(component);
-		this.setSize("400px", "350px");
-		this.setTitle("Nueva Conexión");
-		//this.centerInPage();
+		this.setSize(fourHoundreds,threeHoundredsFifty );
+		this.setTitle(ResourcesManager.getNewconnectiontext());
+		this.centerInPage();
 	}
 	public ConnectionScreen getComponent(){
 		return component;

@@ -32,6 +32,7 @@ public class WebLogicConsole implements EntryPoint {
 		MainServerViewController mainController = new MainServerViewController(UtilGWT.getInstance());
 		mainController.showServersView();
 		//mainController.showServerView();
+		//mainController.showCVDomainServersView();
 		//mainController.test();
 	}
 }

@@ -17,20 +17,15 @@
  */
 package wlstatistics.client.views;
 
-import wlstatistics.client.WeblogicMonitorService.UtilGWT;
 import wlstatistics.client.WeblogicMonitorServiceAsync;
-import wlstatistics.client.controller.MainServerViewController;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -103,7 +98,7 @@ public class ConnectionScreen extends Composite {
 		Button btnNewButton = new Button("Connect");
 		btnNewButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				serverCall.ConnectToServer(host.getValue(), port.getValue(), user.getValue(), password.getValue(), new AsyncCallback<Void>() {
+				/*serverCall.ConnectToServer(host.getValue(), port.getValue(), user.getValue(), password.getValue(), new AsyncCallback<Void>() {
 					
 					@Override
 					public void onFailure(Throwable caught) {
@@ -119,7 +114,7 @@ public class ConnectionScreen extends Composite {
 						mainController.showServerView();
 					
 					}
-				});
+				});*/
 			}
 		});
 		horizontalPanel_2.add(btnNewButton);

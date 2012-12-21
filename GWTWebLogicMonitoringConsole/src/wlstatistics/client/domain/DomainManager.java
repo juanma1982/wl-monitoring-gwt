@@ -19,13 +19,13 @@ package wlstatistics.client.domain;
 
 import java.util.HashMap;
 
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 public class DomainManager {
 	private static DomainManager instance;
 	private DomainManager(){	
 	}
-	private HashMap<String,WLDomain> domains = new HashMap<String, WLDomain>();
+	private HashMap<String,Domain> domains = new HashMap<String, Domain>();
 	
 	public static DomainManager getDomainManager(){
 		if (instance==null)
@@ -33,11 +33,11 @@ public class DomainManager {
 		return instance;
 	}
 	
-	public void addDomain(WLDomain domain){
+	public void addDomain(Domain domain){
 		this.domains.put(domain.getKey(), domain);
 	}
 	
-	public WLDomain getDomain(String key){
+	public Domain getDomain(String key){
 		return this.domains.get(key);
 	}
 

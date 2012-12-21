@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import wlstatistics.client.WeblogicMonitorService;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -34,8 +34,8 @@ public class WeblogicMonitorServiceImpl extends RemoteServiceServlet implements 
 	
 	@Override
 	public void ConnectToServer(String host, String port, String user,
-			String password) throws Exception {
-		dataManager.put(host+port, new WLDataManager(host, port, user, password));	
+			String password,Integer serverType) throws Exception {
+		dataManager.put(host+port, new WLDataManager(host, port, user, password,serverType));	
 	}
 
 	@Override
@@ -64,37 +64,25 @@ public class WeblogicMonitorServiceImpl extends RemoteServiceServlet implements 
 	}
 
 	@Override
-	public WLDomain getTopology(String wl) {
+	public String getDomainName(String wl) {
+		return dataManager.get(wl).getDomainName();
+	}
+	
+	public ArrayList<Domain> getMonitoreableDomains(){
+		return PropertiesReader.getDomains();
+	}
+	
+	@Override
+	public Domain getTopology(String wl) {
 		
-		WLDomain wLDomain = WLDomainTrans.transform( dataManager.get(wl).getDomain());
-		
+		Domain wLDomain = WLDomainTrans.transform( dataManager.get(wl).getDomain());	
 		return wLDomain;
-//		WLDomain result = new WLDomain();
-//		result.setAdminConnectionStatus("RUNNING");
-//		result.setAdminHost("localhost");
-//		result.setAdminPort("7001");
-//		result.setName("AdminServer");
-//		for (int i=0 ; i<5; i++)
-//		{
-//			WLServer server = new WLServer();
-//			server.setServerStatus("RUNNING");
-//			//server.setServerStatus("STOP");
-//			
-//			server.setHost("localhost");
-//			server.setName("Man_"+i);
-//			server.setPort("720"+i);
-//			server.setVersion("10.3");
-//			result.addManagedServers(server);
-//		}
-//		WLServer server = new WLServer();
-//		server.setServerStatus("STOP");
-//		server.setHost("localhost");
-//		server.setName("Man_"+6);
-//		server.setPort("720"+6);
-//		server.setVersion("10.3");
-//		result.addManagedServers(server);
-//		
-//		return result;
+	}
+
+	@Override
+	public Domain saveDomain(Domain controlledDomain) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

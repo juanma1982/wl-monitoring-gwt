@@ -27,7 +27,7 @@ import wlstatistics.client.WeblogicMonitorService.UtilGWT;
 import wlstatistics.client.domain.DomainManager;
 import wlstatistics.client.event.EventManager;
 import wlstatistics.client.views.connectionComponent.ConnectionPopUp;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 public class ConnectionPoupController {
 	private ConnectionPopUp view;
@@ -38,9 +38,9 @@ public class ConnectionPoupController {
 	
 		view.getComponent().getAddButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				final WLDomain domain = view.getComponent().getDomain();
+				final Domain domain = view.getComponent().getDomain();
 				serverCall.ConnectToServer(domain.getAdminHost(), domain.getAdminPort(),
-						domain.getUser(), domain.getPassword(),
+						domain.getUser(), domain.getPassword(),domain.getType(),
 						new AsyncCallback<Void>() {
 
 							@Override

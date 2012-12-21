@@ -34,6 +34,7 @@ public class WLServer implements Serializable{
 	private String health;
 	private ArrayList<WLDatasource> datasources;
 	private static String RUNNING = "RUNNING";
+	private static String DOWN = "DOWN";
 	
 	public WLServer(){
 		name ="";
@@ -89,6 +90,13 @@ public class WLServer implements Serializable{
 		else
 			return false;
 	}
+	
+	public boolean isOk(){
+		if (health.contains("OK"))
+			return true;
+		else
+			return false;
+	}
 	public String getHealth() {
 		return health;
 	}
@@ -104,6 +112,10 @@ public class WLServer implements Serializable{
 	}
 	public void setDatasources(ArrayList<WLDatasource> datasources) {
 		this.datasources = datasources;
+	}
+
+	public String getErrorStatus() {
+		return DOWN;
 	}
 
 	

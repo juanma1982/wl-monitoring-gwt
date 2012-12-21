@@ -21,7 +21,7 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.layout.Portlet;
 
 import wlstatistics.client.controller.ServersViewController;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 public class EventManager {
 	private static EventManager instance;
@@ -36,7 +36,7 @@ public class EventManager {
 		return instance;
 	}
 
-	public void addedDomainEvent(WLDomain domain) {
+	public void addedDomainEvent(Domain domain) {
 		serversViewC.addServerView(domain);
 	}
 	

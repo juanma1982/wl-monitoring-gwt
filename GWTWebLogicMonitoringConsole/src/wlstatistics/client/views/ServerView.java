@@ -36,13 +36,19 @@ public class ServerView extends Portlet {
 	private Label serverName ;
 	private IButton topologiaButton;
 	private IButton listaTopologiaButton;	
+	private IButton guardarButton;
 
 	public ServerView() {
 		
 		super();
 		setTitle("Domain");
 		absolutePanel = new Canvas();
-		this.setSize("100%", "250px");
+		absolutePanel.setWidth("369px");
+		
+		guardarButton = new IButton("Agregar a Tablero");
+		absolutePanel.addChild(guardarButton);
+		guardarButton.setRect(238, 180, 125, 35);
+		this.setSize("389px", "230px");
 		this.addChild(absolutePanel);	
 		
 		StatisticsButton = new IButton("Estad\u00EDsticas");	
@@ -94,8 +100,7 @@ public class ServerView extends Portlet {
 		
 		listaTopologiaButton = new IButton("Lista Topolog\u00EDa");
 		absolutePanel.addChild(listaTopologiaButton);
-		listaTopologiaButton.moveTo(238, 139);
-		listaTopologiaButton.setSize("100px", "35px");
+		listaTopologiaButton.setRect(238, 139, 125, 35);
 		
 		SetConnectionStatusRed();
 		SetServerStatusRed();
@@ -142,8 +147,21 @@ public class ServerView extends Portlet {
 		this.listaTopologiaButton = listaTopologiaButton;
 	}
 	
-	public void setServerName(String name){
-		this.setTitle("Domain "+name);
+	public void setServerName(String name){		
 		this.serverName.setContents(name);
 	}
+
+	public void setDomainName(String result) {
+		this.setTitle("Domain "+result);
+	}
+
+	public IButton getGuardarButton() {
+		return guardarButton;
+	}
+
+	public void setGuardarButton(IButton guardarButton) {
+		this.guardarButton = guardarButton;
+	}
+	
+	
 }

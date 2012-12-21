@@ -25,17 +25,17 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import wlstatistics.client.domain.DomainManager;
 import wlstatistics.client.views.ServerDestinationView;
 import wlstatistics.client.views.destinationComponent.DestinationSelect;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 public class ServerDestinationViewController {
-	private WLDomain domain;
+	private Domain domain;
 	private ServerDestinationView view;
 	
 	public ServerDestinationViewController(){
 		
 	}
 	
-	public ServerDestinationViewController(ServerDestinationView localView,ArrayList<String> items,WLDomain wlDomain){
+	public ServerDestinationViewController(ServerDestinationView localView,ArrayList<String> items,Domain wlDomain){
 		view = localView;
 		domain = wlDomain;
 		for (String itemName : items) {

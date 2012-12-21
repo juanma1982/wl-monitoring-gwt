@@ -19,7 +19,7 @@ package wlstatistics.client;
 
 import java.util.ArrayList;
 
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -40,11 +40,13 @@ public interface WeblogicMonitorService extends RemoteService {
 		}
 	}
 
-	public void ConnectToServer(String host,String port, String user, String password) throws Exception;
+	public void ConnectToServer(String host,String port, String user, String password,Integer type) throws Exception;
 	public String getItemValue(String wl,String propertyToWatch);
 	public ArrayList<String> getJMSItemsNames(String wl);
 	public Boolean isConnected(String wl);
 	public String getServerStatus(String wl);
 	public String getServerName(String wl);
-	public WLDomain getTopology(String key);
+	public Domain getTopology(String key);
+	public String getDomainName(String wl);
+	public Domain saveDomain(Domain controlledDomain);
 }

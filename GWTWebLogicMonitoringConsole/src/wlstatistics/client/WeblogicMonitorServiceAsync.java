@@ -19,7 +19,7 @@ package wlstatistics.client;
 
 import java.util.ArrayList;
 
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -27,7 +27,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface WeblogicMonitorServiceAsync {
 
 	void ConnectToServer(String host, String port, String user,
-			String password, AsyncCallback<Void> callback);
+			String password, Integer type, AsyncCallback<Void> callback);
 
 	void getItemValue(String wl,String propertyToWatch,AsyncCallback<String> callback);
 
@@ -39,5 +39,10 @@ public interface WeblogicMonitorServiceAsync {
 
 	void getServerName(String wl,AsyncCallback<String> callback);
 
-	void getTopology(String key, AsyncCallback<WLDomain> asyncCallback);
+	void getTopology(String key, AsyncCallback<Domain> asyncCallback);
+
+	void getDomainName(String wl, AsyncCallback<String> callback);
+
+	void saveDomain(Domain controlledDomain,
+			AsyncCallback<Domain> asyncCallback);
 }

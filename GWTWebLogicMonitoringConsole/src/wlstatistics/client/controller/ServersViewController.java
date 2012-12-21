@@ -20,7 +20,7 @@ package wlstatistics.client.controller;
 import wlstatistics.client.domain.DomainManager;
 import wlstatistics.client.views.ServerView;
 import wlstatistics.client.views.ServersView;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 import com.google.gwt.user.client.Timer;
 import com.smartgwt.client.widgets.Canvas;
@@ -45,7 +45,7 @@ public class ServersViewController {
 		}
 	}
 	
-	public void addServerView(WLDomain domain){
+	public void addServerView(Domain domain){
 		ServerView auxView = new ServerView();		
 		ServerViewController auxController = new ServerViewController(auxView,domain);
 		view.serversViewControllers.put(domain.getKey(),auxController);

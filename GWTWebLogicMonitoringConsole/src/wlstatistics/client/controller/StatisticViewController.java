@@ -24,7 +24,7 @@ import wlstatistics.client.WeblogicMonitorService.UtilGWT;
 import wlstatistics.client.controller.statisticComponent.StatisticElementController;
 import wlstatistics.client.views.StatisticsView;
 import wlstatistics.client.views.statisticsComponent.StatisticElement;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -34,11 +34,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class StatisticViewController {
 	private StatisticsView view;
-	private WLDomain domain;
+	private Domain domain;
 	private ArrayList<StatisticElementController> statisticItems =  new ArrayList<StatisticElementController>();
 	private WeblogicMonitorServiceAsync serverCall = UtilGWT.getInstance();
 	
-	public StatisticViewController(StatisticsView v,ArrayList<String> items,WLDomain domainL){
+	public StatisticViewController(StatisticsView v,ArrayList<String> items,Domain domainL){
 		view = v;
 		domain = domainL;
 		

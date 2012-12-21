@@ -18,7 +18,7 @@
 package wlstatistics.client.views.connectionComponent;
 
 import wlstatistics.client.WeblogicMonitorServiceAsync;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -48,6 +48,7 @@ public class ConnectionScreen extends Composite {
 		super();
 		serverCall = weblogicMonitorServiceAsync;
 		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.setSpacing(100);
 		verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		initWidget(verticalPanel);
 		verticalPanel.setSize("338px", "305px");
@@ -116,8 +117,8 @@ public class ConnectionScreen extends Composite {
 		return this.add;
 	}
 	
-	public WLDomain getDomain(){
-		WLDomain domain = new WLDomain();					
+	public Domain getDomain(){
+		Domain domain = new Domain();					
 		domain.setAdminHost(host.getValue());
 		domain.setPassword(password.getValue());
 		domain.setAdminPort(port.getValue());
