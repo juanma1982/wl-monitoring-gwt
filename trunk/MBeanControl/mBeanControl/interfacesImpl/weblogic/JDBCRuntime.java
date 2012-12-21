@@ -1,4 +1,4 @@
-package mBeanControl.interfacesImpl;
+package mBeanControl.interfacesImpl.weblogic;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;

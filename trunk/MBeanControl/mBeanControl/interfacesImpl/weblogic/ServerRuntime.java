@@ -15,14 +15,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package mBeanControl.interfacesImpl;
+package mBeanControl.interfacesImpl.weblogic;
 
 import java.util.ArrayList;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
-import mBeanControl.interfaces.IJDBCRuntime;
 import mBeanControl.interfaces.IJDBCRuntimeService;
 import mBeanControl.interfaces.IJMSServer;
 import mBeanControl.interfaces.IJVMRuntime;
@@ -30,46 +29,65 @@ import mBeanControl.interfaces.ISAF;
 import mBeanControl.interfaces.IServer;
 import mBeanControl.interfaces.IServerConfiguration;
 import mBeanControl.interfaces.IThreads;
+import mBeanControl.log.DefaultLogger;
 import weblogic.health.HealthState;
+import weblogic.management.runtime.ServerRuntimeMBean;
 
 public class ServerRuntime implements IServer {
+	private static final String listenPort = "ListenPort";
+	private static final String NA = "N/A";
+    private static final String nameString = "Name";
+    private static final String stateString = "State";
+    private static final String jmsRuntime ="JMSRuntime";
+    private static final String jmsServers = "JMSServers";
+    private static final String openSocketsCurrentCount="OpenSocketsCurrentCount";
+    private static final String jvmRuntime="JVMRuntime";
+    private static final String threadPoolRuntimeString="ThreadPoolRuntime";
+    private static final String serverConfiguration="ServerConfiguration";
+    private static final String adminServer="AdminServer";
+    private static final String listenAddress="ListenAddress";
+	private static final String weblogicVersion = "WeblogicVersion";
+	private static final String healthState = "HealthState";
+	private static final String safRuntimeString = "SAFRuntime";
+	private static final String jdbcServiceRuntime = "JDBCServiceRuntime";
+    
+    
 	private ObjectName serverRuntime;
     private String name;
     private String host;
     private Integer port;
     private String status;
     private String version;
-	private HealthState health;
-    
+	private HealthState health;  
 	private MBeanServerConnection connection;
 
 	public ServerRuntime(MBeanServerConnection connection, ObjectName o) {
 		this.serverRuntime = o;
 		this.connection = connection;
-		name ="N/A";
-		host = "N/A";
+		name =NA;
+		host = NA;
 		port =0;
-		status="N/A";
+		status=NA;
 		health=new HealthState(3);
-		version="N/A";
+		version=NA;
 	}
 
 	public String getName() {
 		try {
-			name = (String) connection.getAttribute(serverRuntime, "Name");
+			name = (String) connection.getAttribute(serverRuntime, nameString);
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(nameString,this.getClass(),e.getMessage());	
 		}
 		return name;
 	}
 
 	public String getState() {
 		try {
-			status = (String) connection.getAttribute(serverRuntime, "State");
+			status = (String) connection.getAttribute(serverRuntime, stateString);
 
 		} catch (Exception e) {
 			status = "DOWN";
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(stateString,this.getClass(),e.getMessage());	
 		}
 		return status;
 	}
@@ -80,9 +98,9 @@ public class ServerRuntime implements IServer {
 		ArrayList<IJMSServer> iJMSServers = new ArrayList<IJMSServer>();
 		try {
 			jmsRT = (ObjectName) connection.getAttribute(serverRuntime,
-					"JMSRuntime");
+					jmsRuntime);
 			jmsServRTs = (ObjectName[]) connection.getAttribute(jmsRT,
-					"JMSServers");
+					jmsServers);
 
 			for (ObjectName jmsServRTObject : jmsServRTs) {
 				JMSServerRuntime jmsServer = new JMSServerRuntime(connection,
@@ -90,7 +108,7 @@ public class ServerRuntime implements IServer {
 				iJMSServers.add(jmsServer);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(jmsRuntime,this.getClass(),e.getMessage());	
 		}
 		return iJMSServers;
 	}
@@ -98,9 +116,9 @@ public class ServerRuntime implements IServer {
 	public Integer getOpenSocketsCurrentCount() {
 		try {
 			return (Integer) connection.getAttribute(serverRuntime,
-					"OpenSocketsCurrentCount");
+					openSocketsCurrentCount);
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(openSocketsCurrentCount,this.getClass(),e.getMessage());
 		}
 		return 0;
 	}
@@ -108,11 +126,11 @@ public class ServerRuntime implements IServer {
 	public IJVMRuntime getIJVMRuntime() {
 		try {
 			ObjectName jVMRuntimeMBean = (ObjectName) connection.getAttribute(
-					serverRuntime, "JVMRuntime");
+					serverRuntime, jvmRuntime);
 			JVMRuntime jVM = new JVMRuntime(connection, jVMRuntimeMBean);
 			return jVM;
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(openSocketsCurrentCount,this.getClass(),e.getMessage());
 		}
 
 		return null;
@@ -121,12 +139,12 @@ public class ServerRuntime implements IServer {
 	public IThreads getIThreads() {
 		try {
 			ObjectName threadPoolRuntime = (ObjectName) connection
-					.getAttribute(serverRuntime, "ThreadPoolRuntime");
+					.getAttribute(serverRuntime, threadPoolRuntimeString);
 			ThreadsRuntime threadsRuntime = new ThreadsRuntime(connection,
 					threadPoolRuntime);
 			return threadsRuntime;
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(threadPoolRuntimeString,this.getClass(),e.getMessage());
 		}
 
 		return null;
@@ -135,12 +153,12 @@ public class ServerRuntime implements IServer {
 	public IServerConfiguration getIServerConfiguration() {
 		try {
 			ObjectName serverMbean = (ObjectName) connection.getAttribute(
-					serverRuntime, "ServerConfiguration");
+					serverRuntime, serverConfiguration);
 			ServerConfiguration serverConfiguration = new ServerConfiguration(
 					connection, serverMbean);
 			return serverConfiguration;
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(serverConfiguration,this.getClass(),e.getMessage());
 		}
 
 		return null;
@@ -157,9 +175,9 @@ public class ServerRuntime implements IServer {
 
 	public Boolean isAdminServer() {
 		try {
-			return(Boolean) connection.getAttribute(serverRuntime, "AdminServer");
+			return(Boolean) connection.getAttribute(serverRuntime, adminServer);
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(adminServer,this.getClass(),e.getMessage());
 		}
 
 		return false;
@@ -168,9 +186,9 @@ public class ServerRuntime implements IServer {
 	public String getListenAddress() {
 		
 		try {
-			host = (String) connection.getAttribute(serverRuntime, "ListenAddress");
+			host = (String) connection.getAttribute(serverRuntime, listenAddress);
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(listenAddress,this.getClass(),e.getMessage());
 		}
 
 		return host;
@@ -178,45 +196,63 @@ public class ServerRuntime implements IServer {
 
 	public Integer getListenPort() {
 		try {
-			port = (Integer) connection.getAttribute(serverRuntime, "ListenPort");
+			port = (Integer) connection.getAttribute(serverRuntime, listenPort);
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(listenPort,this.getClass(),e.getMessage());
 		}
 
 		return port;
 	}
 
-	public String getWeblogicVersion() {
+	public String getVersion() {
 		try {
-			version = (String) connection.getAttribute(serverRuntime, "WeblogicVersion");
+			version = (String) connection.getAttribute(serverRuntime, weblogicVersion);
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(weblogicVersion,this.getClass(),e.getMessage());
 		}
 
 		return version;
 	}
 
-	public HealthState getHealthState() {
+	public String getHealthState() {
 		try {
-			health = (HealthState) connection.getAttribute(serverRuntime, "HealthState");
+			health = (HealthState) connection.getAttribute(serverRuntime, healthState);
+			System.out.println(((ServerRuntimeMBean)serverRuntime).getHealthState().getState());
 		} catch (Exception e) {
 			health=new HealthState(3);
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(healthState,this.getClass(),e.getMessage());	
 		}
-
-		return health;
+		String healthString = null;
+		switch (health.getState()) {
+			case HealthState.HEALTH_OK:
+				healthString = "OK";
+				break;
+			case HealthState.HEALTH_FAILED:
+				healthString = "FAILED";
+				break;
+			case HealthState.HEALTH_CRITICAL:
+				healthString = "CRITICAL";
+				break;
+			case HealthState.HEALTH_OVERLOADED:
+				healthString = "OVERLOADED";
+				break;
+			case HealthState.HEALTH_WARN:
+				healthString = "WARNING";
+				break;
+			}
+		return healthString;		
 	}
-
+		
 
 	public ISAF getSAF() {
 		try {
 			ObjectName sAFRuntime = (ObjectName) connection.getAttribute(
-					serverRuntime, "SAFRuntime");
+					serverRuntime, safRuntimeString);
 			SAFRuntime sAF = new SAFRuntime(
 					connection, sAFRuntime);
 			return sAF;
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(safRuntimeString,this.getClass(),e.getMessage());	
 		}
 
 		return null;
@@ -226,12 +262,12 @@ public class ServerRuntime implements IServer {
 	public IJDBCRuntimeService getIJDBCRuntimeService() {
 		try {
 			ObjectName jdbcRuntime = (ObjectName) connection.getAttribute(
-					serverRuntime, "JDBCServiceRuntime");
+					serverRuntime, jdbcServiceRuntime);
 			JDBCRuntimeService jdbcRuntimeWL = new JDBCRuntimeService(
 					connection, jdbcRuntime);
 			return jdbcRuntimeWL;
 		} catch (Exception e) {
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectAttributeLog(jdbcServiceRuntime,this.getClass(),e.getMessage());	
 		}
 
 		return null;
