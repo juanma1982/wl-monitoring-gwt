@@ -15,39 +15,29 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package mBeanControl.interfacesImpl;
+package mBeanControl.interfacesImpl.weblogic;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
-import mBeanControl.interfaces.IThreads;
+import mBeanControl.interfaces.IJVMRuntime;
 
-public class ThreadsRuntime implements IThreads{
-	
+public class JVMRuntime implements IJVMRuntime{
 	private MBeanServerConnection connection;
-	private ObjectName threadPoolRuntime;
+	private ObjectName jVMRuntimeMBean;
 	
-	public ThreadsRuntime(MBeanServerConnection connection, ObjectName threadPoolRuntime) {
+	public JVMRuntime(MBeanServerConnection connection, ObjectName runtimeMBean) {
 		this.connection = connection;
-		this.threadPoolRuntime = threadPoolRuntime;
+		this.jVMRuntimeMBean = runtimeMBean;
 	}
-
-	public Integer getExecuteThreadIdleCount() {
+	
+	public Long getHeapSizeCurrent(){
 		try {
-			return (Integer) connection.getAttribute(threadPoolRuntime, "ExecuteThreadIdleCount");
+			return (Long) connection.getAttribute(jVMRuntimeMBean, "HeapSizeCurrent");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new Long(0);
 	}
-
-	public Integer getPendingUserRequestCount() {
-		try {
-			return (Integer) connection.getAttribute(threadPoolRuntime, "PendingUserRequestCount");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	
 }

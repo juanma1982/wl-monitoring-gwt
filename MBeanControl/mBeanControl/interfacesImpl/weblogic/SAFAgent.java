@@ -15,41 +15,39 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package mBeanControl.interfacesImpl;
-
-import java.util.ArrayList;
+package mBeanControl.interfacesImpl.weblogic;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
 import weblogic.health.HealthState;
 
-import mBeanControl.interfaces.ISAF;
 import mBeanControl.interfaces.ISAFAgent;
 
 /**
  *
  * @author jbrasca
- * date: Aug 15, 2011
+ * date: Aug 16, 2011
  */
-public class SAFRuntime implements ISAF {
-	private ObjectName sAFRuntime;
+public class SAFAgent implements ISAFAgent {
+
 	private MBeanServerConnection connection;
-	
+	private ObjectName agentRuntime;
+
 	/**
 	 * @param connection
-	 * @param sAFRuntime
+	 * @param agentMbean
 	 */
-	public SAFRuntime(MBeanServerConnection connection, ObjectName sAFRuntime) {
+	public SAFAgent(MBeanServerConnection connection, ObjectName agentRuntime) {
 		this.connection = connection;
-		this.sAFRuntime = sAFRuntime;
+		this.agentRuntime = agentRuntime;	
 	}
 	
 	public String getName() {
 
 		String name = null;
 		try {
-			name = (String) connection.getAttribute(sAFRuntime, "Name");
+			name = (String) connection.getAttribute(agentRuntime, "Name");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +57,7 @@ public class SAFRuntime implements ISAF {
 	}
 	public HealthState getHealthState() {
 		try {
-			return (HealthState) connection.getAttribute(sAFRuntime, "HealthState");
+			return (HealthState) connection.getAttribute(agentRuntime, "HealthState");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,19 +65,38 @@ public class SAFRuntime implements ISAF {
 		return null;
 	}
 
-	public ArrayList<ISAFAgent> getAgents() {
-		ArrayList<ISAFAgent> agents =  new ArrayList<ISAFAgent>();
+
+	public Long getMessagesReceivedCount() {
 		try {
-			ObjectName[] agentsMbeans = (ObjectName[]) connection.getAttribute(sAFRuntime, "Agents");
-			for(ObjectName agentMbean:agentsMbeans){
-				agents.add(new SAFAgent(connection,agentMbean));
-			}
+			return (Long) connection.getAttribute(agentRuntime, "MessagesReceivedCount");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
-		return agents;
+		return null;
 	}
 
+
+	public Long getMessagesCurrentCount() {
+		try {
+			return (Long) connection.getAttribute(agentRuntime, "MessagesCurrentCount");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return null;
+	}
+
+
+	public Long getFailedMessagesTotal() {
+		try {
+			return (Long) connection.getAttribute(agentRuntime, "FailedMessagesTotal");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return null;
+	}
 
 
 }
