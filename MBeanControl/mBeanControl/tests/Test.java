@@ -43,7 +43,7 @@ public class Test {
 		String username = "weblogic";
 		String password = "weblogic";
 		
-		IDomain dr = ConnectionFactory.Connect(hostname, portString, username, password);
+		IDomain dr = ConnectionFactory.Connect(hostname, portString, username, password,0);
 		
 		try {
 			printServersInfo(dr.getIServers());
@@ -68,7 +68,7 @@ public class Test {
 		System.out.println("Listen Address: " + server.getListenAddress());
 		System.out.println("Listen Port: " + server.getListenPort());
 		System.out.println("Health State: " + server.getHealthState());
-		System.out.println("Weblogic Version: " + server.getWeblogicVersion());
+		System.out.println("Weblogic Version: " + server.getVersion());
 		System.out.println("Open Sockets: " + 
 						   server.getOpenSocketsCurrentCount());
 		System.out.println("Current Heap Size: " + 
