@@ -31,9 +31,9 @@ public class WLServerTransfor {
 			wLServer.setName(server.getName());
 			wLServer.setHost(server.getListenAddress());
 			wLServer.setPort(server.getListenPort().toString());
-			wLServer.setVersion(server.getWeblogicVersion());
+			wLServer.setVersion(server.getVersion());
 			wLServer.setServerStatus(server.getState());
-			wLServer.setHealth(getStringHealth(server.getHealthState()));
+			wLServer.setHealth(server.getHealthState());
 			if (server.getIJDBCRuntimeService() != null)
 				for (IJDBCRuntime datasource : server.getIJDBCRuntimeService()
 						.getIJDBCRuntimes()) {
@@ -46,27 +46,6 @@ public class WLServerTransfor {
 		}
 		return wLServer;
 	}
-
-	public static String getStringHealth(HealthState state) {
-		String health = "";
-		switch (state.getState()) {
-		case HealthState.HEALTH_OK:
-			health = "OK";
-			break;
-		case HealthState.HEALTH_FAILED:
-			health = "FAILED";
-			break;
-		case HealthState.HEALTH_CRITICAL:
-			health = "CRITICAL";
-			break;
-		case HealthState.HEALTH_OVERLOADED:
-			health = "OVERLOADED";
-			break;
-		case HealthState.HEALTH_WARN:
-			health = "WARNING";
-			break;
-		}
-		return health;
-	}
+	
 
 }

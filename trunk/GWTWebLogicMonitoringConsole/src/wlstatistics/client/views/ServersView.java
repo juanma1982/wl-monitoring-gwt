@@ -21,8 +21,12 @@ import java.util.HashMap;
 
 import wlstatistics.client.controller.ServerViewController;
 import wlstatistics.client.controller.connectionComponent.ConnectionPoupController;
+import wlstatistics.client.controller.connectionComponent.NewConnectionScreenController;
+import wlstatistics.client.resources.ResourcesManager;
 import wlstatistics.client.views.connectionComponent.ConnectionPopUp;
+import wlstatistics.client.views.connectionComponent.NewConnectionScreenView;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -40,12 +44,20 @@ import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripMenuButton;
 
 public class ServersView extends VLayout {
+	private static final String oneHundred = "100%";
+	private static final String pixels = "32px";	
+	
 	private ConnectionPopUp connectionPopUp = new ConnectionPopUp();
+	private NewConnectionScreenView newConnection = new NewConnectionScreenView();
+	
 	public HashMap<String,ServerViewController> serversViewControllers = new HashMap<String, ServerViewController>();
 	public PortalLayout serversPanel;
+	
+	
 	public ServersView() {
 		
 		ConnectionPoupController popController = new ConnectionPoupController(connectionPopUp);
+		NewConnectionScreenController controller= new NewConnectionScreenController(newConnection);
 		
 		serversPanel = new PortalLayout(1);
 		serversPanel.setWidth100();  
@@ -55,46 +67,43 @@ public class ServersView extends VLayout {
 		this.setHeight100();
 		ToolStrip menuBar = new ToolStrip();
 		this.addMember(menuBar);
-		menuBar.setSize("100%", "32px");
+		menuBar.setSize(oneHundred,pixels );
 		Menu menuBar_1 = new Menu();
 			
-		MenuItem mntmNueva = new MenuItem("Nueva");
+		MenuItem mntmNueva = new MenuItem(ResourcesManager.getNewtext());
 		mntmNueva.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				if (!connectionPopUp.isDrawn())
+				/*if (!connectionPopUp.isDrawn())
 					connectionPopUp.draw();
 				else
-					connectionPopUp.show();
+					connectionPopUp.show();*/
+				if (!newConnection.isDrawn())
+					newConnection.draw();
+				else
+					newConnection.show();
 			}
 		});
 		menuBar_1.addItem(mntmNueva);
 		
-		MenuItem mntmEliminar = new MenuItem("Eliminar");
+		MenuItem mntmEliminar = new MenuItem(ResourcesManager.getDeletetext());
 		mntmEliminar.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				Window.alert("Funcionalidad No Implementada");
+				Window.alert(ResourcesManager.getNotimplementedmsg());
 				
 			}
 		});
 		
 		menuBar_1.addItem(mntmEliminar);
-		ToolStripMenuButton menuConexiones = new ToolStripMenuButton("Conexiones",menuBar_1);
+		ToolStripMenuButton menuConexiones = new ToolStripMenuButton(ResourcesManager.getConnectionstext(),menuBar_1);
 		menuBar.addMenuButton(menuConexiones);
 		
 		menuBar.addSeparator();
 		this.addMember(serversPanel);
-//		
-//		MenuItem mntmSalir = new MenuItem("Salir", false, new Command() {
-//			public void execute() {
-//				Window.alert("Funcionalidad No Implementada");
-//			}
-//		});
-//		menuBar.addItem(mntmSalir);
-		
+
 	}
 
 	

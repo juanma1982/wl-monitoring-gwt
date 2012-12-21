@@ -20,7 +20,7 @@ package wlstatistics.client.controller;
 import wlstatistics.client.WeblogicMonitorServiceAsync;
 import wlstatistics.client.WeblogicMonitorService.UtilGWT;
 import wlstatistics.client.views.TopologyView;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 import wlstatistics.shared.model.WLServer;
 
 import com.google.gwt.user.client.Timer;
@@ -31,11 +31,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TopologyViewController {
 	private TopologyView view;
-	private WLDomain controlledDomain;
-	private WLDomain topologyResult;
+	private Domain controlledDomain;
+	private Domain topologyResult;
 	WeblogicMonitorServiceAsync serverCall = UtilGWT.getInstance();
 	
-	public TopologyViewController(TopologyView view,WLDomain domain,WLDomain result){
+	public TopologyViewController(TopologyView view,Domain domain,Domain result){
 		this.view = view;
 		this.controlledDomain = domain;
 		this.topologyResult = result;
@@ -66,10 +66,10 @@ public class TopologyViewController {
 	}
 	
 	protected void refreshConnection() {
-		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<WLDomain>() {
+		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<Domain>() {
 			
 			@Override
-			public void onSuccess(WLDomain result) {
+			public void onSuccess(Domain result) {
 				topologyResult = result;
 				view.setClusterStatusRed();
 				view.setFinalSize();

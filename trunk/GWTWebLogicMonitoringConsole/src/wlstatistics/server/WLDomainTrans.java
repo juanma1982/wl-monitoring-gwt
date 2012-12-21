@@ -17,7 +17,7 @@
  */
 package wlstatistics.server;
 
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 import mBeanControl.exceptions.ObjectNotFoundException;
 import mBeanControl.interfaces.IDomain;
 import mBeanControl.interfaces.IServer;
@@ -25,15 +25,15 @@ import mBeanControl.interfaces.IServer;
 public class WLDomainTrans {
 
 
-	public static WLDomain transform(IDomain domain) {
+	public static Domain transform(IDomain domain) {
 
-		WLDomain wLDomain = new WLDomain();
+		Domain wLDomain = new Domain();
 		try {
 			wLDomain.setName(domain.getName());
 			wLDomain.setAdminServerName(domain.getAdminServerName());
 			wLDomain.setAdminHost(domain.getAdminServer().getListenAddress());
 			wLDomain.setAdminPort(domain.getAdminServer().getListenPort().toString());
-			wLDomain.setAdminHealth(WLServerTransfor.getStringHealth(domain.getAdminServer().getHealthState()));
+			wLDomain.setAdminHealth(domain.getAdminServer().getHealthState());
 			wLDomain.setAdminServerStatus(domain.getAdminServer().getState());
 			for(IServer server: domain.getManagedServers()){
 				wLDomain.addManagedServers(WLServerTransfor.transform(server));				

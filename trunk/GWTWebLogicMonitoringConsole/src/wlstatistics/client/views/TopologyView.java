@@ -128,7 +128,7 @@ public class TopologyView extends Portlet {
 		ServerComponent serverCom = new ServerComponent();
 		serverCom.setServerName(server.getName());
 		serverCom.setServerUrl(server.getHost()+":"+server.getPort());
-		if (server.isRunning())
+		if (server.isOk())
 			{
 				serverCom.setStatusGreen();
 				setClusterStatusGreen();

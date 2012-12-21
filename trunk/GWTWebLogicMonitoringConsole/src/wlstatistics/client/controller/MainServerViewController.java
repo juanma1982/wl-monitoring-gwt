@@ -19,6 +19,7 @@ package wlstatistics.client.controller;
 
 import wlstatistics.client.WeblogicMonitorServiceAsync;
 import wlstatistics.client.event.EventManager;
+import wlstatistics.client.views.DomainMonitoringView;
 import wlstatistics.client.views.ServerView;
 import wlstatistics.client.views.ServersView;
 
@@ -29,6 +30,7 @@ public class MainServerViewController {
 	WeblogicMonitorServiceAsync serverCall;
 	ServerViewController serverViewController;
 	ServersViewController serversViewController;
+	//DomainMonitoringViewController domainMonitoringViewController;
 	
 	public MainServerViewController(WeblogicMonitorServiceAsync serverCall) {
 		super();
@@ -37,9 +39,9 @@ public class MainServerViewController {
 
 	public void showServerView(){
 		ServerView view = new ServerView();
-//		serverViewController = new ServerViewController(view);
 		RootPanel.get().add(view);		
 	}
+	
 	public void showServersView(){
 		RootPanel rootPanel = RootPanel.get();
 		//rootPanel.clear();
@@ -48,4 +50,14 @@ public class MainServerViewController {
 		EventManager.getEventManager().setServersViewC(serversViewController);
 		rootPanel.add(view);		
 	}
+	
+	public void showCVDomainServersView(){
+		RootPanel rootPanel = RootPanel.get();
+		//rootPanel.clsear();
+		//DomainMonitoringView view = new DomainMonitoringView();
+		//domainMonitoringViewController = new DomainMonitoringViewController(view);
+		//rootPanel.add(view);		
+	}
+	
+	
 }

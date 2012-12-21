@@ -20,82 +20,131 @@ package wlstatistics.client.views;
 import java.util.HashMap;
 
 import wlstatistics.client.controller.ServerViewController;
-import wlstatistics.client.controller.connectionComponent.ConnectionPoupController;
-import wlstatistics.client.views.connectionComponent.ConnectionPopUp;
+import wlstatistics.client.resources.ResourcesManager;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.layout.PortalLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.menu.MenuItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.smartgwt.client.widgets.menu.Menu;
-import com.smartgwt.client.widgets.menu.events.ClickHandler;
-import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripMenuButton;
 
 public class DomainMonitoringView extends VLayout {
-	private ConnectionPopUp connectionPopUp = new ConnectionPopUp();
+	private static final String datasource = "Datasource";
+	private static final String manejado = "Servidor Manejado";
+	private static final String admin = "Servidor Administrador";
+	private static final String acerca = "Acerca de..";
+	private static final String conexiones = "Conexiones";
+	private static final String soa = "SOA Suite";
+	private static final String osbasync = "OSB Asincronico";
+	private static final String osbsync = "OSB Sincronico";
+		
 	public HashMap<String,ServerViewController> serversViewControllers = new HashMap<String, ServerViewController>();
 	public PortalLayout serversPanel;
+	
+	private MenuItem mntmOSBSinc;
+	private MenuItem mntmOSBAsync;
+	private MenuItem mntmSOA;
+	private MenuItem mntmHelp;
+	private MenuItem mntmManaged;
+	private MenuItem mntmAdminServer;
+	private MenuItem mntmDatasource;
+	
 	public DomainMonitoringView() {
-		
-		ConnectionPoupController popController = new ConnectionPoupController(connectionPopUp);
 		
 		serversPanel = new PortalLayout(1);
 		serversPanel.setWidth100();  
 		serversPanel.setHeight100();  
 		serversPanel.setShowColumnMenus(false);
+		serversPanel.setCanAcceptDrop(false);
 		this.setWidth100();
 		this.setHeight100();
 		ToolStrip menuBar = new ToolStrip();
 		this.addMember(menuBar);
 		menuBar.setSize("100%", "32px");
-		Menu menuBar_1 = new Menu();
+		Menu menuBarConnections = new Menu();
 			
-		MenuItem mntmNueva = new MenuItem("Nueva");
-		mntmNueva.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				if (!connectionPopUp.isDrawn())
-					connectionPopUp.draw();
-				else
-					connectionPopUp.show();
-			}
-		});
-		menuBar_1.addItem(mntmNueva);
+		mntmOSBSinc = new MenuItem(osbsync);
+		menuBarConnections.addItem(mntmOSBSinc);
 		
-		MenuItem mntmEliminar = new MenuItem("Eliminar");
-		mntmEliminar.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				Window.alert("Funcionalidad No Implementada");
-				
-			}
-		});
+		mntmOSBAsync = new MenuItem(osbasync);
+		menuBarConnections.addItem(mntmOSBAsync);
 		
-		menuBar_1.addItem(mntmEliminar);
-		ToolStripMenuButton menuConexiones = new ToolStripMenuButton("Conexiones",menuBar_1);
+		mntmSOA = new MenuItem(soa);
+		menuBarConnections.addItem(mntmSOA);
+		
+		ToolStripMenuButton menuConexiones = new ToolStripMenuButton(conexiones,menuBarConnections);
 		menuBar.addMenuButton(menuConexiones);
 		
 		menuBar.addSeparator();
+		
+		Menu menuBarHelp = new Menu();
+		
+		mntmHelp = new MenuItem(acerca);
+		menuBarHelp.addItem(mntmHelp);
+		
+		mntmAdminServer = new MenuItem(admin);
+		mntmAdminServer.setIcon(ResourcesManager.getAdminserverimage());
+		menuBarHelp.addItem(mntmAdminServer);
+		
+		mntmManaged = new MenuItem(manejado);
+		mntmManaged.setIcon(ResourcesManager.getServerimage());
+		menuBarHelp.addItem(mntmManaged);
+		
+		mntmDatasource = new MenuItem(datasource);
+		mntmDatasource.setIcon(ResourcesManager.getDbimage());
+		menuBarHelp.addItem(mntmDatasource);
+		
+		ToolStripMenuButton menuAcerca = new ToolStripMenuButton("Ayuda",menuBarHelp);
+		menuBar.addMenuButton(menuAcerca);
 		this.addMember(serversPanel);
-//		
-//		MenuItem mntmSalir = new MenuItem("Salir", false, new Command() {
-//			public void execute() {
-//				Window.alert("Funcionalidad No Implementada");
-//			}
-//		});
-//		menuBar.addItem(mntmSalir);
 		
 	}
 
+	public MenuItem getMntmOSBSinc() {
+		return mntmOSBSinc;
+	}
+
+	public void setMntmOSBSinc(MenuItem mntmOSBSinc) {
+		this.mntmOSBSinc = mntmOSBSinc;
+	}
+
+	public MenuItem getMntmOSBAsync() {
+		return mntmOSBAsync;
+	}
+
+	public void setMntmOSBAsync(MenuItem mntmOSBAsync) {
+		this.mntmOSBAsync = mntmOSBAsync;
+	}
+
+	public MenuItem getMntmSOA() {
+		return mntmSOA;
+	}
+
+	public void setMntmSOA(MenuItem mntmSOA) {
+		this.mntmSOA = mntmSOA;
+	}
+
+	public MenuItem getMntmHelp() {
+		return mntmHelp;
+	}
+
+	public void setMntmHelp(MenuItem mntmHelp) {
+		this.mntmHelp = mntmHelp;
+	}
+
+	public MenuItem getMntmManaged() {
+		return mntmManaged;
+	}
+
+	public MenuItem getMntmAdminServer() {
+		return mntmAdminServer;
+	}
+
+	public MenuItem getMntmDatasource() {
+		return mntmDatasource;
+	}
+	
+	
 	
 }

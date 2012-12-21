@@ -17,6 +17,7 @@
  */
 package wlstatistics.server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,16 +27,44 @@ import mBeanControl.interfaces.IDomain;
 import mBeanControl.interfaces.IJMSDestination;
 import mBeanControl.interfaces.IJMSServer;
 import mBeanControl.interfaces.IServer;
+import mBeanControl.log.DefaultLogger;
 
 public class WLDataManager {
+	private static final String jmsDestination = "jmsDestination";
+	private static final String domain = "domain";
+	private static final String adminServer = "AdminServer";
 	private IDomain domianRuntime;
+	private String adminHost;
+	private String adminPort;
+	private String userAdmin;
+	private String userPass;
 	private HashMap<String, IJMSDestination> jmsDestinations = new HashMap<String, IJMSDestination>();
+	private Integer type;
 
-	public WLDataManager(String host, String port, String user, String password) {
-		this.domianRuntime = ConnectionFactory.Connect(host, port, user,
-				password);
+	public WLDataManager(String host, String port, String user, String password,Integer typeServer) {
+		adminHost = host;
+		adminPort = port;
+		userAdmin  = user;
+		userPass = password;
+		type = typeServer;
+		connect();
 	}
 
+	private void connect()
+	{
+		this.domianRuntime = ConnectionFactory.Connect(adminHost, adminPort, userAdmin,
+				userPass,type);
+	}
+	
+	public void closeConnection(){
+		try {
+			ConnectionFactory.closeConnection();
+			this.domianRuntime = null;
+		} catch (IOException e) {		
+			DefaultLogger.NotFoundObjectLog(domain, this.getClass(), e.getMessage());
+		}
+	}
+	
 	public ArrayList<String> setMonitoreableJMSDestinations() {
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<IServer> servers;
@@ -53,9 +82,8 @@ public class WLDataManager {
 					}
 				}
 			}
-		} catch (ObjectNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ObjectNotFoundException e) {			
+			DefaultLogger.NotFoundObjectLog(jmsDestination, this.getClass(), e.getMessage());
 		}
 		return result;
 	}
@@ -68,14 +96,13 @@ public class WLDataManager {
 			try {
 				if (domianRuntime==null)
 					return false;
-				else
+				else			
 				if (domianRuntime.getIServers()==null)
 					return false;
 				else
 					return true;
 			} catch (ObjectNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DefaultLogger.NotFoundObjectLog(domain, this.getClass(), e.getMessage());
 			}
 		return false;	
 	}
@@ -84,9 +111,7 @@ public class WLDataManager {
 		try {
 			return domianRuntime.getIServers().get(0).getState();
 		} catch (ObjectNotFoundException e) {
-			
-			e.printStackTrace();
-			
+			DefaultLogger.NotFoundObjectLog(domain, this.getClass(), e.getMessage());
 		}
 		return "ERROR";
 	}
@@ -95,13 +120,23 @@ public class WLDataManager {
 		try {
 			return domianRuntime.getIServers().get(0).getName();
 		} catch (ObjectNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DefaultLogger.NotFoundObjectLog(adminServer, this.getClass(), e.getMessage());
+		}
+		return "ERROR";
+	}
+	
+	public String getDomainName() {
+		try {
+			return this.domianRuntime.getName();
+		} catch (ObjectNotFoundException e) {
+			DefaultLogger.NotFoundObjectLog(adminServer, this.getClass(), e.getMessage());
 		}
 		return "ERROR";
 	}
 	
 	public IDomain getDomain(){
+		if(this.domianRuntime == null)
+			connect();
 		return this.domianRuntime;
 	}
 }

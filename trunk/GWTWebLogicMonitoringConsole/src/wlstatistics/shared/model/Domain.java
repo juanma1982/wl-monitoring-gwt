@@ -20,7 +20,7 @@ package wlstatistics.shared.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class WLDomain implements Serializable{
+public class Domain implements Serializable{
 	/**
 	 * 
 	 */
@@ -34,9 +34,24 @@ public class WLDomain implements Serializable{
 	private String adminServerStatus;
 	private String adminConnectionStatus;
 	private String adminHealth;
+	private Integer type;
 	private ArrayList<String> jmsDestinationSelected = new ArrayList<String>();
 	private ArrayList<WLServer> managedServers = new ArrayList<WLServer>();
 	
+	public Domain()
+	{
+		
+	}
+	
+	public Domain(String adminHost, String adminPort, String user,
+			String password, int i) {
+		super();
+		this.adminHost = adminHost;
+		this.adminPort = adminPort;
+		this.user = user;
+		this.password = password;
+		this.type = i;
+	}
 	public String getName() {
 		return name;
 	}
@@ -120,6 +135,14 @@ public class WLDomain implements Serializable{
 	}
 	public void setAdminServerName(String adminServerName) {
 		this.adminServerName = adminServerName;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 	
 }

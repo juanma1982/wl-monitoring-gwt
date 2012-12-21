@@ -22,12 +22,13 @@ import java.util.ArrayList;
 import wlstatistics.client.WeblogicMonitorService.UtilGWT;
 import wlstatistics.client.event.EventManager;
 import wlstatistics.client.WeblogicMonitorServiceAsync;
+import wlstatistics.client.resources.ResourcesManager;
 import wlstatistics.client.views.ServerDestinationView;
 import wlstatistics.client.views.ServerView;
 import wlstatistics.client.views.StatisticsView;
 import wlstatistics.client.views.TopologyListView;
 import wlstatistics.client.views.TopologyView;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -36,11 +37,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ServerViewController {
 	private ServerView view;
-	private WLDomain controlledDomain;
+	private Domain controlledDomain;
 	StatisticViewController statisticsViewController;
 	ServerDestinationViewController destinationsController;
 	WeblogicMonitorServiceAsync serverCall = UtilGWT.getInstance();
-	public ServerViewController(ServerView v,WLDomain domain){
+	public ServerViewController(ServerView v,Domain domain){
 		view = v;
 		controlledDomain= domain;
 		view.getStatisticButton().addClickHandler(new ClickHandler() {
@@ -71,14 +72,36 @@ public class ServerViewController {
 			}
 
 		});
+		view.getGuardarButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				guardarDomain();
+			}
+
+		});
 		
 	}
 	
-	public void popUpTopologia() {
-		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<WLDomain>() {
+	protected void guardarDomain() {
+		serverCall.saveDomain(controlledDomain,new AsyncCallback<Domain>() {
 			
 			@Override
-			public void onSuccess(WLDomain result) {
+			public void onSuccess(Domain result) {
+				Window.alert(ResourcesManager.getSavedDomainMsg());
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(ResourcesManager.getErrorSaveDomainMsg());
+				
+			}
+		});
+	}
+
+	public void popUpTopologia() {
+		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<Domain>() {
+			
+			@Override
+			public void onSuccess(Domain result) {
 				TopologyView view = new TopologyView();				
 				TopologyViewController topologyController = new TopologyViewController(view,controlledDomain, result);
 				//EventManager.getEventManager().addPortletMainWindow(view);
@@ -93,10 +116,10 @@ public class ServerViewController {
 	}
 	
 	public void popUpListaTopologia() {
-		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<WLDomain>() {
+		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<Domain>() {
 			
 			@Override
-			public void onSuccess(WLDomain result) {
+			public void onSuccess(Domain result) {
 				TopologyListView viewList = new TopologyListView();				
 				TopologyListViewController topologyListController = new TopologyListViewController(viewList,controlledDomain, result);
 			}
@@ -191,6 +214,18 @@ public class ServerViewController {
 							public void onFailure(Throwable caught) {
 								 Window.alert("Error al obtener nombre de server");
 								
+							}
+						});				
+						serverCall.getDomainName(controlledDomain.getKey(), new AsyncCallback<String>() {
+							
+							@Override
+							public void onSuccess(String result) {
+								view.setDomainName(result);
+							}
+							
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert("Error al obtener nombre del dominio");															
 							}
 						});
 						SetStatusOk();

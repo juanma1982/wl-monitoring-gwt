@@ -19,9 +19,10 @@ package wlstatistics.client.controller;
 
 import wlstatistics.client.WeblogicMonitorService.UtilGWT;
 import wlstatistics.client.WeblogicMonitorServiceAsync;
+import wlstatistics.client.resources.ResourcesManager;
 import wlstatistics.client.views.TopologyListView;
 import wlstatistics.shared.model.WLDatasource;
-import wlstatistics.shared.model.WLDomain;
+import wlstatistics.shared.model.Domain;
 import wlstatistics.shared.model.WLServer;
 
 import com.google.gwt.user.client.Timer;
@@ -31,13 +32,15 @@ import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 public class TopologyListViewController {
+	
 	private TopologyListView view;
-	private static String dominio = "Dominio: ";
-	private WLDomain controlledDomain;
-	private WLDomain topologyResult;
+	private static String dominio = "Dominio";
+	private static String puntos = ":";
+	private Domain controlledDomain;
+	private Domain topologyResult;
 	WeblogicMonitorServiceAsync serverCall = UtilGWT.getInstance();
 	
-	public TopologyListViewController(TopologyListView view,WLDomain domain,WLDomain result){
+	public TopologyListViewController(TopologyListView view,Domain domain,Domain result){
 		this.view = view;
 		this.controlledDomain = domain;
 		this.topologyResult = result;
@@ -46,21 +49,23 @@ public class TopologyListViewController {
 		      public void run() {
 		    	  refreshConnection();
 		      };};
-		      t.scheduleRepeating(5000);
-		
-		
+		      t.scheduleRepeating(30000);
+		view.setLeft(10);
+		view.setRight(1000);
+		view.setTop(40);
 		view.show();
 		view.setCanDrag(false);
+		view.setCanDrop(false);
 	}
 	
 	protected void refreshConnection() {
-		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<WLDomain>() {
+		serverCall.getTopology(controlledDomain.getKey(),new AsyncCallback<Domain>() {
 			
 			@Override
-			public void onSuccess(WLDomain result) {
+			public void onSuccess(Domain result) {
 				topologyResult = result;
 				setViewData();
-				view.setTitle(dominio + topologyResult.getName());
+				view.setTitle(dominio + view.getTitlePrefix() + puntos + topologyResult.getName());
 				view.setAutoSize(true);
 				view.setCanDragResize(true);
 					}
@@ -88,6 +93,7 @@ public class TopologyListViewController {
 		adminNode.setAttribute(TopologyListView.health, topologyResult.getAdminServerStatus());
 		adminNode.setAttribute(TopologyListView.serverStatus, topologyResult.getAdminServerStatus());
 		adminNode.setAttribute(TopologyListView.serverHealth, topologyResult.getAdminHealth());
+		adminNode.setIcon(ResourcesManager.getAdminserverimage());
 		
 		domainNodeLeft.setAttribute(TopologyListView.name, topologyResult.getName());
 		domainNodeRight.setAttribute(TopologyListView.name, topologyResult.getName());
@@ -126,15 +132,19 @@ public class TopologyListViewController {
 		TreeNode managedNode = new TreeNode();
 		managedNode.setAttribute(TopologyListView.name, server.getName());
 		managedNode.setAttribute(TopologyListView.health, server.getServerStatus());
-		managedNode.setAttribute(TopologyListView.serverStatus, server.getServerStatus());
+		if(server.isOk())		
+			managedNode.setAttribute(TopologyListView.serverStatus, server.getServerStatus());
+		else
+			managedNode.setAttribute(TopologyListView.serverStatus, server.getErrorStatus());
 		managedNode.setAttribute(TopologyListView.serverHealth, server.getHealth());
-		
+		managedNode.setIcon(ResourcesManager.getServerimage());
 		data.add(managedNode, domainNode);
 		for (WLDatasource datasource : server.getDatasources()) {
 			TreeNode datasourceNode = new TreeNode();
 			datasourceNode.setAttribute(TopologyListView.name, datasource.getName());
 			datasourceNode.setAttribute(TopologyListView.health, datasource.getStatus());
-			datasourceNode.setAttribute(TopologyListView.serverStatus, datasource.getIndicatorResult());	
+			datasourceNode.setAttribute(TopologyListView.serverStatus, datasource.getIndicatorResult());
+			datasourceNode.setIcon(ResourcesManager.getDbimage());
 			data.add(datasourceNode,managedNode);
 		}
 	}

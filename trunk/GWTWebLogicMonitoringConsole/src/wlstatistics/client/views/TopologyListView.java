@@ -1,5 +1,6 @@
 package wlstatistics.client.views;
 
+import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -16,13 +17,14 @@ public class TopologyListView extends Portlet {
 	private static String estado = "Estado";
 	private static String subEstado = "Estado Servidor";
 	private static String indicador ="Indicador";
-	private static String prefix = "/images/";
+	private static String prefix = "images/";
 	private static String sufix =".GIF";
 	public static String name = "name";
 	public static String health = "health";
 	public static String serverStatus = "serverStatus";
 	public static String serverHealth = "serverHealth";
-
+	private String TitlePrefix;
+	
 	public TopologyListView() {
 		layout = new HLayout();
 		treeGridLeft = new TreeGrid();
@@ -34,7 +36,7 @@ public class TopologyListView extends Portlet {
 		TreeGridField statusField = new TreeGridField(health,estado, 70);
 		TreeGridField healthField = new TreeGridField(serverHealth,subEstado, 80);
 		TreeGridField indicatorField = new TreeGridField(serverStatus,indicador, 70);
-		indicatorField.setImageURLPrefix(prefix);
+		indicatorField.setImageURLPrefix(GWT.getHostPageBaseURL()+prefix);
 		indicatorField.setImageURLSuffix(sufix);
 		indicatorField.setType(ListGridFieldType.IMAGE);
 		indicatorField.setAlign(Alignment.CENTER);
@@ -45,6 +47,7 @@ public class TopologyListView extends Portlet {
 		addItem(layout);
 		this.setHeight(sixty);
 		this.setWidth(sixty);
+		this.setShowMaximizeButton(false);
 	}
 
 	public TreeGrid getTreeGridLeft() {
@@ -63,4 +66,12 @@ public class TopologyListView extends Portlet {
 		this.treeGridRight = treeGridRight;
 	}
 
+	public String getTitlePrefix() {
+		return TitlePrefix;
+	}
+
+	public void setTitlePrefix(String titlePrefix) {
+		TitlePrefix = titlePrefix;
+	}
+	
 }
