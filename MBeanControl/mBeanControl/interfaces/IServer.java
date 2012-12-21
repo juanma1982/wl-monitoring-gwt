@@ -50,9 +50,9 @@ public interface IServer {
 	
 	public Integer getListenPort();
 	
-	public String getWeblogicVersion();
+	public String getVersion();
 	
-	public weblogic.health.HealthState getHealthState();
+	public String getHealthState();
 	
 	public ISAF getSAF();
 }
