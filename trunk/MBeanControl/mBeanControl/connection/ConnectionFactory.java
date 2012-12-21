@@ -32,41 +32,43 @@ import javax.management.remote.JMXServiceURL;
 import javax.naming.Context;
 
 import mBeanControl.interfaces.IDomain;
-import mBeanControl.interfacesImpl.DomainRuntime;
-
+import mBeanControl.interfacesImpl.weblogic.DomainRuntime;
 
 /**
  * This class let you manage the connections with diferents weblogics
  * 
  * @author jbrasca
- *
+ * 
  */
 public class ConnectionFactory {
-	   private static JMXConnector connector;
-	   private static Map<String,DomainRuntime> connections;
-	  
-	   /**
-	    * This method returns an interface of a given domain, it works like a singleton 
-	    * for each domain.
-	    * 
-	    * @param hostname  
-	    * @param portString
-	    * @param username
-	    * @param password
-	    * @return IDomain 
-	    */
-	   public static IDomain Connect(String hostname, String portString, String username, String password){
-		   if(connections == null){
-			   connections = new HashMap<String, DomainRuntime>();
-		   }
-		   String key = hostname+portString+username+password;
-		   if(connections.containsKey(key)){
-			  return connections.get(key);
-		   }
-		   else{
-			   DomainRuntime dr = null;
+	private static JMXConnector connector;
+	private static Map<String, IDomain> connections;
+
+	/**
+	 * This method returns an interface of a given domain, it works like a
+	 * singleton for each domain.
+	 * 
+	 * @param hostname
+	 * @param portString
+	 * @param username
+	 * @param password
+	 * @return IDomain
+	 */
+	public static IDomain Connect(String hostname, String portString,
+			String username, String password,Integer type) {
+		if (connections == null) {
+			connections = new HashMap<String, IDomain>();
+		}
+		String key = hostname + portString + username + password;
+		if (connections.containsKey(key)) {
+			return connections.get(key);
+		} else {
+			IDomain dr = null;
 			try {
-				dr = initConnection(hostname, portString, username, password);
+				if(type==0)
+					dr = initWeblogicConnection(hostname, portString, username, password);
+				if(type==1)
+					dr = initJBossConnection(hostname, portString, username, password);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -74,45 +76,86 @@ public class ConnectionFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			   connections.put(key, dr);
-			   return dr;
-		   }
-		   
-	   }
+			connections.put(key, dr);
+			return dr;
+		}
+	}
+	/**
+	 *  Initialize connection and returns the Jboss Domain Runtime MBean Server
+	 *  
+	 * @param hostname
+	 * @param portString
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws IOException 
+	 */	
+	private static IDomain initJBossConnection(String hostname,
+			String portString, String username, String password) throws IOException {
 
-	   /**
-	    * Initialize connection and returns the Domain Runtime MBean Server
-	    * 
-	    * @param hostname
-	    * @param portString
-	    * @param username
-	    * @param password
-	    * @return
-	    * @throws IOException
-	    * @throws MalformedURLException
-	    */
-	   private static DomainRuntime initConnection(String hostname, String portString, String username, String password) throws IOException, MalformedURLException {
-		   MBeanServerConnection connection;
-		   ObjectName domainRuntimeMBean;
-		   try {
-			   domainRuntimeMBean = new ObjectName("com.bea:Name=DomainRuntimeService,Type=weblogic.management.mbeanservers.domainruntime.DomainRuntimeServiceMBean");
-	       }catch (MalformedObjectNameException e) {
-	         throw new AssertionError(e.getMessage());
-	       }
-		   
-	      String protocol = "t3";
-	      Integer portInteger = Integer.valueOf(portString);
-	      int port = portInteger.intValue();
-	      String jndiroot = "/jndi/";
-	      String mserver = "weblogic.management.mbeanservers.domainruntime";
-	      JMXServiceURL serviceURL = new JMXServiceURL(protocol, hostname, port, jndiroot + mserver);
-	      Hashtable<String, String> h = new Hashtable<String, String>();
-	      h.put(Context.SECURITY_PRINCIPAL, username);
-	      h.put(Context.SECURITY_CREDENTIALS, password);
-	      h.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
-	      connector = JMXConnectorFactory.connect(serviceURL, h);
-	      connection = connector.getMBeanServerConnection();
-	      
-	      return new DomainRuntime(connection,domainRuntimeMBean);
-	   }
+		String urlString = "service:jmx:rmi://" + hostname + "/jndi/rmi://"+hostname+":" + portString+"/jmxconnector";
+
+		String webClusterObjectName="jboss.web:type=Server";   
+		JMXServiceURL serviceURL = new JMXServiceURL(urlString);
+
+		Hashtable<String, String[]> h = new Hashtable<String, String[]>();
+		String[] credentials = new String[] { username, password };
+		h.put("jmx.remote.credentials", credentials);
+
+		connector = JMXConnectorFactory.connect(serviceURL,h);
+		MBeanServerConnection connection = connector.getMBeanServerConnection();
+		ObjectName domainRuntimeMBean;
+		try {
+			domainRuntimeMBean = new ObjectName(webClusterObjectName);
+		} catch (MalformedObjectNameException e) {
+			throw new AssertionError(e.getMessage());
+		}
+
+		return new mBeanControl.interfacesImpl.jboss.DomainRuntime(domainRuntimeMBean,connection);
+	}
+
+	/**
+	 * Initialize connection and returns the weblogic Domain Runtime MBean Server
+	 * 
+	 * @param hostname
+	 * @param portString
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws IOException
+	 * @throws MalformedURLException
+	 */
+	private static IDomain initWeblogicConnection(String hostname,
+			String portString, String username, String password)
+			throws IOException, MalformedURLException {
+		MBeanServerConnection connection;
+		ObjectName domainRuntimeMBean;
+		try {
+			domainRuntimeMBean = new ObjectName(
+					"com.bea:Name=DomainRuntimeService,Type=weblogic.management.mbeanservers.domainruntime.DomainRuntimeServiceMBean");
+		} catch (MalformedObjectNameException e) {
+			throw new AssertionError(e.getMessage());
+		}
+
+		String protocol = "t3";
+		Integer portInteger = Integer.valueOf(portString);
+		int port = portInteger.intValue();
+		String jndiroot = "/jndi/";
+		String mserver = "weblogic.management.mbeanservers.domainruntime";
+		JMXServiceURL serviceURL = new JMXServiceURL(protocol, hostname, port,
+				jndiroot + mserver);
+		Hashtable<String, String> h = new Hashtable<String, String>();
+		h.put(Context.SECURITY_PRINCIPAL, username);
+		h.put(Context.SECURITY_CREDENTIALS, password);
+		h.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES,
+				"weblogic.management.remote");
+		connector = JMXConnectorFactory.connect(serviceURL, h);
+		connection = connector.getMBeanServerConnection();
+
+		return new DomainRuntime(connection, domainRuntimeMBean);
+	}
+
+	public static void closeConnection() throws IOException {
+		connector.close();
+	}
 }
